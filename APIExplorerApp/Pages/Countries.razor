@@ -1,0 +1,87 @@
+﻿@page "/countries"
+@using APIExplorerApp.Models
+@using APIExplorerApp.Services
+@inject ICountryService CountryService
+
+<h3>World Countries Explorer</h3>
+
+@if (countries == null)
+{
+    <p><em>Loading countries...</em></p>
+}
+else
+{
+    <div class="mb-3">
+        <input @bind="searchTerm" @bind:event="oninput" placeholder="Search countries..." class="form-control" />
+        <small class="text-muted">Search by name, region, or subregion</small>
+    </div>
+
+    <div class="mb-3">
+        <label>Filter by Region:</label>
+        <select @bind="selectedRegion" class="form-control">
+            <option value="">All Regions</option>
+            @foreach (var region in regions)
+            {
+                <option value="@region">@region</option>
+            }
+        </select>
+    </div>
+
+    <p>Showing @filteredCountries.Count countries</p>
+
+    <div class="row">
+        @foreach (var country in filteredCountries)
+        {
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@country.Name.Common</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@country.Name.Official</h6>
+                        <p class="card-text">
+                            <strong>Capital:</strong> @(country.Capital != null ? string.Join(", ", country.Capital) : "N/A")<br/>
+                            <strong>Region:</strong> @country.Region<br/>
+                            <strong>Population:</strong> @country.Population.ToString("N0")<br/>
+                            <strong>Languages:</strong> @(country.Languages != null ? string.Join(", ", country.Languages.Values) : "N/A")
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<Country> countries = new();
+    private List<Country> filteredCountries = new();
+    private string searchTerm = string.Empty;
+    private string selectedRegion = string.Empty;
+    private List<string> regions = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        countries = await CountryService.GetAllCountriesAsync();
+        filteredCountries = countries;
+        regions = countries.Select(c => c.Region).Distinct().OrderBy(r => r).ToList();
+    }
+
+    private void FilterCountries()
+    {
+        var filtered = countries;
+
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            filtered = filtered.Where(c => 
+                c.Name.Common.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                c.Region.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                (c.Subregion?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false))
+                .ToList();
+        }
+
+        if (!string.IsNullOrWhiteSpace(selectedRegion))
+        {
+            filtered = filtered.Where(c => c.Region == selectedRegion).ToList();
+        }
+
+        filteredCountries = filtered;
+    }
+}

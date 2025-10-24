@@ -2,10 +2,10 @@
 
 namespace APIExplorerApp.Services
 {
-    public interface IDogService
+    public interface IJokeService
     {
-        Task<DogImage> GetRandomDogImageAsync();
-        Task<List<string>> GetDogBreedsAsync();
-        Task<List<DogImage>> GetDogImagesByBreedAsync(string breed, int count = 5);
+        Task<Joke> GetRandomJokeAsync();
+        Task<Joke> GetProgrammingJokeAsync();
+        Task<List<string>> GetJokeCategoriesAsync();
     }
 }
