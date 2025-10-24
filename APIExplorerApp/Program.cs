@@ -9,7 +9,7 @@ builder.Services.AddHttpClient();
 
 // Register your custom services
 builder.Services.AddScoped<ICountryService, CountryService>();
-// builder.Services.AddScoped<IDogService, DogService>();
+builder.Services.AddScoped<IDogService, DogService>();
 // builder.Services.AddScoped<IJokeService, JokeService>();
 
 var app = builder.Build();

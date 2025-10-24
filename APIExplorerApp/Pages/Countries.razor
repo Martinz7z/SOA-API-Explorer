@@ -5,20 +5,20 @@
 
 <h3>World Countries Explorer</h3>
 
-@if (countries == null)
+@if (countries == null || !countries.Any())
 {
     <p><em>Loading countries...</em></p>
 }
 else
 {
     <div class="mb-3">
-        <input @bind="searchTerm" @bind:event="oninput" placeholder="Search countries..." class="form-control" />
+        <input value="@searchTerm" @oninput="HandleSearchInput" placeholder="Search countries..." class="form-control" />
         <small class="text-muted">Search by name, region, or subregion</small>
     </div>
 
     <div class="mb-3">
         <label>Filter by Region:</label>
-        <select @bind="selectedRegion" class="form-control">
+        <select value="@selectedRegion" @onchange="HandleRegionChange" class="form-control">
             <option value="">All Regions</option>
             @foreach (var region in regions)
             {
@@ -27,7 +27,7 @@ else
         </select>
     </div>
 
-    <p>Showing @filteredCountries.Count countries</p>
+    <p>Showing @filteredCountries.Count of @countries.Count countries</p>
 
     <div class="row">
         @foreach (var country in filteredCountries)
@@ -62,26 +62,52 @@ else
         countries = await CountryService.GetAllCountriesAsync();
         filteredCountries = countries;
         regions = countries.Select(c => c.Region).Distinct().OrderBy(r => r).ToList();
+        StateHasChanged();
+        
+        // Debug
+        Console.WriteLine("=== COUNTRIES LOADED ===");
+        Console.WriteLine($"Total countries: {countries.Count}");
+        Console.WriteLine($"Regions found: {string.Join(", ", regions)}");
+    }
+
+    private void HandleSearchInput(ChangeEventArgs e)
+    {
+        searchTerm = e.Value?.ToString() ?? string.Empty;
+        Console.WriteLine($"=== SEARCH: '{searchTerm}' ===");
+        FilterCountries();
+    }
+
+    private void HandleRegionChange(ChangeEventArgs e)
+    {
+        selectedRegion = e.Value?.ToString() ?? string.Empty;
+        Console.WriteLine($"=== REGION: '{selectedRegion}' ===");
+        FilterCountries();
     }
 
     private void FilterCountries()
     {
+        Console.WriteLine($"=== FILTERING: Search='{searchTerm}', Region='{selectedRegion}' ===");
+        
         var filtered = countries;
 
+        // Apply search filter
         if (!string.IsNullOrWhiteSpace(searchTerm))
         {
             filtered = filtered.Where(c => 
-                c.Name.Common.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-                c.Region.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                (c.Name.Common?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                (c.Region?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
                 (c.Subregion?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false))
                 .ToList();
         }
 
+        // Apply region filter
         if (!string.IsNullOrWhiteSpace(selectedRegion))
         {
             filtered = filtered.Where(c => c.Region == selectedRegion).ToList();
         }
 
+        Console.WriteLine($"=== RESULTS: {filtered.Count} countries ===");
         filteredCountries = filtered;
+        StateHasChanged();
     }
 }

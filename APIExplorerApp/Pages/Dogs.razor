@@ -1,0 +1,67 @@
+﻿@page "/dogs"
+@using APIExplorerApp.Models
+@using APIExplorerApp.Services
+@inject IDogService DogService
+
+<h3>🐕 Dog Image Gallery</h3>
+
+<div class="mb-3">
+    <button @onclick="GetRandomDog" class="btn btn-primary">Get Random Dog Image</button>
+</div>
+
+@if (isLoading)
+{
+    <p><em>Loading dog image...</em></p>
+}
+
+@if (!string.IsNullOrEmpty(currentDogImage))
+{
+    <div class="card">
+        <img src="@currentDogImage" class="card-img-top" alt="Random dog" style="max-height: 500px; object-fit: cover;" />
+        <div class="card-body">
+            <p class="card-text">Here's a random dog for you! 🐕</p>
+        </div>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger mt-3">
+        @errorMessage
+    </div>
+}
+
+@code {
+    private string currentDogImage = string.Empty;
+    private string errorMessage = string.Empty;
+    private bool isLoading = false;
+
+    private async Task GetRandomDog()
+    {
+        isLoading = true;
+        errorMessage = string.Empty;
+        StateHasChanged();
+
+        try
+        {
+            var dog = await DogService.GetRandomDogImageAsync();
+            if (dog != null && !string.IsNullOrEmpty(dog.Message))
+            {
+                currentDogImage = dog.Message;
+            }
+            else
+            {
+                errorMessage = "Failed to load dog image. Please try again.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+}
