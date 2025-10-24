@@ -1,0 +1,156 @@
+﻿/* Custom Styles for API Explorer App */
+
+/* Global Styles */
+.app-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+/* Country Card Styles */
+.country-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    background: white;
+}
+
+    .country-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .country-card .card-body {
+        padding: 1.5rem;
+    }
+
+.country-flag {
+    height: 40px;
+    margin-right: 10px;
+    border-radius: 3px;
+}
+
+/* Dog Gallery Styles */
+.dog-gallery {
+    text-align: center;
+}
+
+.dog-image {
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease;
+}
+
+    .dog-image:hover {
+        transform: scale(1.02);
+    }
+
+.dog-button {
+    background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+    border: none;
+    border-radius: 25px;
+    padding: 12px 30px;
+    font-weight: bold;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+    .dog-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+    }
+
+/* Search and Filter Styles */
+.search-box {
+    border-radius: 25px;
+    border: 2px solid #e9ecef;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+    .search-box:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+
+.region-filter {
+    border-radius: 25px;
+    border: 2px solid #e9ecef;
+    padding: 10px 20px;
+}
+
+/* Loading Animation */
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Stats Counter */
+.stats-counter {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 20px;
+    border-radius: 20px;
+    color: white;
+    font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .country-card {
+        margin-bottom: 1rem;
+    }
+
+    .dog-image {
+        max-height: 300px;
+    }
+}
+
+/* Custom Navbar */
+.navbar-dark {
+    background: rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: blur(10px);
+}
+
+.nav-link {
+    border-radius: 10px;
+    margin: 2px 0;
+    transition: all 0.3s ease;
+}
+
+    .nav-link:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateX(5px);
+    }
+
+/* Page Headers */
+.page-header {
+    color: white;
+    text-align: center;
+    margin-bottom: 2rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+    .page-header h3 {
+        font-size: 2.5rem;
+        font-weight: bold;
+    }

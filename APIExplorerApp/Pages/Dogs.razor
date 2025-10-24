@@ -3,33 +3,46 @@
 @using APIExplorerApp.Services
 @inject IDogService DogService
 
-<h3>🐕 Dog Image Gallery</h3>
+<div class="app-container">
+    <div class="container py-4">
+        <div class="page-header">
+            <h3>🐕 Dog Image Gallery</h3>
+        </div>
 
-<div class="mb-3">
-    <button @onclick="GetRandomDog" class="btn btn-primary">Get Random Dog Image</button>
-</div>
+        <div class="dog-gallery">
+            <div class="mb-4">
+                <button @onclick="GetRandomDog" class="btn dog-button">
+                    🐾 Get Random Dog Image
+                </button>
+            </div>
 
-@if (isLoading)
-{
-    <p><em>Loading dog image...</em></p>
-}
+            @if (isLoading)
+            {
+                <div class="text-center text-white">
+                    <div class="loading-spinner mx-auto mb-2"></div>
+                    <p><em>Fetching a cute doggo...</em></p>
+                </div>
+            }
 
-@if (!string.IsNullOrEmpty(currentDogImage))
-{
-    <div class="card">
-        <img src="@currentDogImage" class="card-img-top" alt="Random dog" style="max-height: 500px; object-fit: cover;" />
-        <div class="card-body">
-            <p class="card-text">Here's a random dog for you! 🐕</p>
+            @if (!string.IsNullOrEmpty(currentDogImage))
+            {
+                <div class="card border-0 bg-transparent">
+                    <img src="@currentDogImage" class="dog-image card-img-top" alt="Random dog" />
+                    <div class="card-body">
+                        <p class="card-text text-white">Here's a random dog for you! 🐕</p>
+                    </div>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger mt-3">
+                    @errorMessage
+                </div>
+            }
         </div>
     </div>
-}
-
-@if (!string.IsNullOrEmpty(errorMessage))
-{
-    <div class="alert alert-danger mt-3">
-        @errorMessage
-    </div>
-}
+</div>
 
 @code {
     private string currentDogImage = string.Empty;

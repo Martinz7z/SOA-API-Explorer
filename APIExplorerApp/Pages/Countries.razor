@@ -3,52 +3,71 @@
 @using APIExplorerApp.Services
 @inject ICountryService CountryService
 
-<h3>World Countries Explorer</h3>
+<div class="app-container">
+    <div class="container py-4">
+        <div class="page-header">
+            <h3>🌍 World Countries Explorer</h3>
+        </div>
 
-@if (countries == null || !countries.Any())
-{
-    <p><em>Loading countries...</em></p>
-}
-else
-{
-    <div class="mb-3">
-        <input value="@searchTerm" @oninput="HandleSearchInput" placeholder="Search countries..." class="form-control" />
-        <small class="text-muted">Search by name, region, or subregion</small>
-    </div>
-
-    <div class="mb-3">
-        <label>Filter by Region:</label>
-        <select value="@selectedRegion" @onchange="HandleRegionChange" class="form-control">
-            <option value="">All Regions</option>
-            @foreach (var region in regions)
-            {
-                <option value="@region">@region</option>
-            }
-        </select>
-    </div>
-
-    <p>Showing @filteredCountries.Count of @countries.Count countries</p>
-
-    <div class="row">
-        @foreach (var country in filteredCountries)
+        @if (countries == null || !countries.Any())
         {
-            <div class="col-md-4 mb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">@country.Name.Common</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">@country.Name.Official</h6>
-                        <p class="card-text">
-                            <strong>Capital:</strong> @(country.Capital != null ? string.Join(", ", country.Capital) : "N/A")<br/>
-                            <strong>Region:</strong> @country.Region<br/>
-                            <strong>Population:</strong> @country.Population.ToString("N0")<br/>
-                            <strong>Languages:</strong> @(country.Languages != null ? string.Join(", ", country.Languages.Values) : "N/A")
-                        </p>
-                    </div>
+            <div class="text-center text-white">
+                <div class="loading-spinner mx-auto mb-2"></div>
+                <p><em>Loading countries...</em></p>
+            </div>
+        }
+        else
+        {
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <input value="@searchTerm" @oninput="HandleSearchInput" 
+                           placeholder="Search countries..." class="form-control search-box" />
+                    <small class="text-white">Search by name, region, or subregion</small>
                 </div>
+                <div class="col-md-6">
+                    <label class="text-white">Filter by Region:</label>
+                    <select value="@selectedRegion" @onchange="HandleRegionChange" class="form-control region-filter">
+                        <option value="">All Regions</option>
+                        @foreach (var region in regions)
+                        {
+                            <option value="@region">@region</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="stats-counter mb-3">
+                Showing @filteredCountries.Count of @countries.Count countries
+            </div>
+
+            <div class="row">
+                @foreach (var country in filteredCountries)
+                {
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="country-card card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    @if (!string.IsNullOrEmpty(country.Flag))
+                                    {
+                                        <img src="@country.Flag" class="country-flag" alt="Flag" />
+                                    }
+                                    @country.Name.Common
+                                </h5>
+                                <h6 class="card-subtitle mb-2 text-muted">@country.Name.Official</h6>
+                                <p class="card-text">
+                                    <strong>Capital:</strong> @(country.Capital != null ? string.Join(", ", country.Capital) : "N/A")<br/>
+                                    <strong>Region:</strong> @country.Region<br/>
+                                    <strong>Population:</strong> @country.Population.ToString("N0")<br/>
+                                    <strong>Languages:</strong> @(country.Languages != null ? string.Join(", ", country.Languages.Values) : "N/A")
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
         }
     </div>
-}
+</div>
 
 @code {
     private List<Country> countries = new();
